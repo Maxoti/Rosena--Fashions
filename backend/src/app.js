@@ -16,6 +16,8 @@ app.use(cors({
     'http://127.0.0.1:5500',
     'https://rosena-fashions-1.onrender.com' // Add your Render URL
   ],
+   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
 }));
 
 app.use(bodyParser.json());
