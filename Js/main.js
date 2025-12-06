@@ -611,7 +611,7 @@ async function handleReviewSubmit(e) {
     console.log('Submitting review:', reviewData);
 
     try {
-        const response = await fetch(`${API_URL}`, {
+        const response = await fetch(`${API_URL}/api/reviews`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
