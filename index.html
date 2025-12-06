@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fashion Store - WhatsApp Enabled</title>
+    <title>Rosena Fashion Store - Shop Online</title>
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -15,186 +15,106 @@
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
             <li><a href="#location">Location</a></li>
+            <li class="cart-nav-item">
+                <a href="#" onclick="toggleCart(); return false;">
+                    🛒 Cart <span id="cart-count" class="cart-badge">0</span>
+                </a>
+            </li>
         </ul>
     </nav>
 
     <!-- Home Section -->
-     <h1>Rosena Fashion Store</h1>
+    <section id="home">
+        <h1>Rosena Fashion Store</h1>
         <p>Your one-stop shop for quality African fashion and modern apparel</p>
-        <p>Chat with us instantly on WhatsApp for quick service!</p>
+        <p>Shop online and order instantly via WhatsApp!</p>
         <button class="cta-button" onclick="openWhatsApp()">📱 Chat on WhatsApp</button>
     </section>
 
     <!-- Gallery Section -->
     <section id="gallery">
         <h2 class="section-title">Our Collection</h2>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <img src="assets/images/African-shirts from ksh1700.jpeg" alt="African Print Shirt" class="gallery-item-img">
-                <h3>African Shirts</h3>
-                <p>From Ksh 1,700</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('African Print Shirt', 1700)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Ankara-shirts from ksh 3000.jpeg" alt="Ankara Design Shirt" class="gallery-item-img">
-                <h3>Ankara Design Shirt</h3>
-                <p>From Ksh 3,000</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Ankara Design Shirt', 3000)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/blouse&skirt from Ksh2000.jpeg" alt="Blouse & Skirt" class="gallery-item-img">
-                <h3>Blouse & Skirt</h3>
-                <p>From Ksh 2,000</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Blouse & Skirt', 2000)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Cinderella-dress.jpeg" alt="Cinderell Dress" class="gallery-item-img">
-                <h3>Cinderella Long Dress</h3>
-                <p>From Ksh 4,000</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Cinderella Dress', 4000)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Full-Length Abaya Kaftans from Ksh 2500.jpeg" alt="Full-Length Abaya Kaftans" class="gallery-item-img">
-                <h3>Full-Length Abaya Kaftans</h3>
-                <p>From Ksh 2,500</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Full-Length Abaya Kaftans', 2500)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Heavy -duty -reflector jackets from Ksh1500.jpeg" alt="Heavy Duty Reflector Jackets" class="gallery-item-img">
-                <h3>Heavy Duty Reflector Jackets</h3>
-                <p>From Ksh 1,500</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Heavy Duty Reflector Jackets', 1500)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Kaftan- suits from Ksh 4500.jpeg" alt="Kaftan Suits" class="gallery-item-img">
-                <h3>Kaftan Suits</h3>
-                <p>From Ksh 4,500</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Kaftan Suits', 4500)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/kitenge-shirts from ksh 2500.jpeg" alt="Kitenge Shirt" class="gallery-item-img">
-                <h3>Kitenge Shirt</h3>
-                <p>From Ksh 2,500</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Kitenge Shirt', 2500)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Ladies -official -Jacket from Ksh5000.jpeg" alt="Ladies Official Jacket" class="gallery-item-img">
-                <h3>Ladies Official Jacket</h3>
-                <p>From Ksh 5,000</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Ladies Official Jacket', 5000)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Official -Kitengedress from Ksh 2000.jpeg" alt="Official Kitenge Dress" class="gallery-item-img">
-                <h3>Official Kitenge Dress</h3>
-                <p>From Ksh 2,000</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Official Kitenge Dress', 2000)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Official -shirts from Ksh2000.jpeg" alt="Official Shirts" class="gallery-item-img">
-                <h3>Official Shirts</h3>
-                <p>From Ksh 2,000</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Official Shirts', 2000)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/official -skirt-suits from Ksh 5000.jpeg" alt="Official Skirt Suits" class="gallery-item-img">
-                <h3>Official Skirt Suits</h3>
-                <p>From Ksh 5,000</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Official Skirt Suits', 5000)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Official-shirtdress from Ksh1800.jpeg" alt="Official Shirt Dress" class="gallery-item-img">
-                <h3>Official Shirt Dress</h3>
-                <p>From Ksh 1,800</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Official Shirt Dress', 1800)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Princess-round dress from Ksh 4000.jpeg" alt="Princess Round Dress" class="gallery-item-img">
-                <h3>Princess Round Dress</h3>
-                <p>From Ksh 4,000</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Princess Round Dress', 4000)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/School-unifrom  from Ksh 1500.jpeg" alt="School Uniform" class="gallery-item-img">
-                <h3>School Uniform</h3>
-                <p>From Ksh 1,500</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('School Uniform', 1500)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Shirt -Dress from Ksh1800.jpeg" alt="Shirt Dress" class="gallery-item-img">
-                <h3>Shirt Dress</h3>
-                <p>From Ksh 1,800</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Shirt Dress', 1800)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/Kids-wear.jpg" alt=" Kids Wear" class="gallery-item-img">
-                <h3>Kids Wear</h3>
-                <p>From Ksh 1,800</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Shirt Dress', 1800)">
-                    📱 Order Now
-                </button>
-            </div>
-
-            <div class="gallery-item">
-                <img src="assets/images/kitenge-bag.jpeg" alt="Kitenge Bag" class="gallery-item-img">
-                <h3>Kitenge Bag</h3>
-                <p>From Ksh 1,800</p>
-                <button class="whatsapp-btn" onclick="sendWhatsApp('Shirt Dress', 1800)">
-                    📱 Order Now
-                </button>
-            </div>
-
-
-
+        <div class="gallery-grid" id="products-container">
+            <div class="loading">Loading products...</div>
         </div>
     </section>
+
+    <!-- Shopping Cart Sidebar -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h2>Shopping Cart</h2>
+            <span class="cart-close" onclick="toggleCart()">×</span>
+        </div>
+        
+        <div id="cart-items" class="cart-items">
+            <p class="empty-cart">Your cart is empty</p>
+        </div>
+        
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total">Ksh 0</span>
+            </div>
+            <button class="checkout-btn" onclick="checkoutViaWhatsApp()">
+                📱 Checkout via WhatsApp
+            </button>
+            <button class="clear-cart-btn" onclick="clearCart()">
+                Clear Cart
+            </button>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div id="cart-overlay" class="cart-overlay" onclick="toggleCart()"></div>
+
+    <!-- Product Details Modal -->
+    <div id="product-modal" class="product-modal">
+        <div class="product-modal-content">
+            <span class="modal-close" onclick="closeProductModal()">×</span>
+            <div id="modal-body">
+                <!-- Product details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="review-modal" class="review-modal">
+        <div class="review-modal-content">
+            <span class="modal-close" onclick="closeReviewModal()">×</span>
+            <h3>Write a Review</h3>
+            <form id="review-form">
+                <input type="hidden" id="review-product-id">
+                
+                <div class="form-group">
+                    <label for="customer-name">Your Name</label>
+                    <input type="text" id="customer-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="review-stars" id="star-input">
+                        <input type="radio" name="rating" id="star5" value="5">
+                        <label for="star5">★</label>
+                        <input type="radio" name="rating" id="star4" value="4">
+                        <label for="star4">★</label>
+                        <input type="radio" name="rating" id="star3" value="3">
+                        <label for="star3">★</label>
+                        <input type="radio" name="rating" id="star2" value="2">
+                        <label for="star2">★</label>
+                        <input type="radio" name="rating" id="star1" value="1">
+                        <label for="star1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="review-text">Your Review</label>
+                    <textarea id="review-text" class="review-textarea" rows="4" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-review-btn">Submit Review</button>
+            </form>
+        </div>
+    </div>
 
     <!-- About Section -->
     <section id="about">
@@ -202,9 +122,9 @@
         <div class="about-content">
             <p>Welcome to Rosena Fashion Store — your trusted destination for premium African fashion and modern apparel. We curate the finest selection of traditional and contemporary outfits that beautifully blend culture, elegance, and style.</p>
 
-<p>We proudly offer wholesale and retail services, as well as professional embroidery and overlock stitching.</p>
+            <p>We proudly offer wholesale and retail services, as well as professional embroidery and overlock stitching.</p>
 
-<p>With years of experience in the fashion industry, we remain committed to delivering exceptional quality, competitive pricing, and outstanding customer service to all our clients.</p>
+            <p>With years of experience in the fashion industry, we remain committed to delivering exceptional quality, competitive pricing, and outstanding customer service to all our clients.</p>
 
             <div class="about-features">
                 <div class="feature-box">
@@ -274,7 +194,7 @@
                     <span>📍</span>
                     <div>
                         <strong>Visit Us</strong><br>
-                         Off Thika Road at Ngumba-Meso Complex shop 35/34,Nairobi
+                         Off Thika Road at Ngumba-Meso Complex shop 35/34, Nairobi
                     </div>
                 </div>
             </div>
@@ -289,20 +209,19 @@
                 Visit our store in Nairobi located off Thika Road at Ngumba-Meso Complex shop 35/34. We're conveniently located and easy to find!
             </p>
             <div class="map-container">
-                <!-- Replace this with actual Google Maps embed -->
                 <iframe 
                     src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d63822.43214709256!2d36.88825969167946!3d-1.2279787963304185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sNgumba-Meso%20Complex%2C%20Thika%20Road%2C%20Nairobi!5e0!3m2!1sen!2ske!4v1764822627206!5m2!1sen!2ske"
-                     width="800" 
-                     height="600" 
+                     width="100%" 
+                     height="450" 
                      style="border:0;" 
                      allowfullscreen="" 
                      loading="lazy" 
                      referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>"
+                </iframe>
                    
                 <div style="margin-top: 20px; text-align: center;">
                     <p style="color: #555; margin-bottom: 15px;">
-                        <strong>Address:</strong> [Off Thika Rd.Ngumba-Meso Complex  Shop 35/34], Nairobi, Kenya
+                        <strong>Address:</strong> Off Thika Rd. Ngumba-Meso Complex Shop 35/34, Nairobi, Kenya
                     </p>
                     <button class="whatsapp-btn" onclick="getDirections()">
                         🗺️ Get Directions via WhatsApp
@@ -317,7 +236,6 @@
         <p>&copy; 2025 Rosena Fashion Store. All rights reserved.</p>
         <p>Connect with us on WhatsApp for instant support!</p>
         <p>📱 +254 737867028</p>
-
     </footer>
 
     <!-- WhatsApp Float Button -->
