@@ -41,10 +41,61 @@ function initializeApp() {
 }
 
 function setupEventListeners() {
+    // Cart button - PRIMARY FIX FOR MOBILE
+    const cartButton = document.getElementById('cart-button');
+    if (cartButton) {
+        cartButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleCart();
+        });
+    }
+
     // Cart overlay click
     const overlay = document.getElementById('cart-overlay');
     if (overlay) {
         overlay.addEventListener('click', toggleCart);
+    }
+
+    // Cart close button
+    const cartClose = document.getElementById('cart-close-btn');
+    if (cartClose) {
+        cartClose.addEventListener('click', toggleCart);
+    }
+
+    // Checkout button
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', checkoutViaWhatsApp);
+    }
+
+    // Clear cart button
+    const clearCartBtn = document.getElementById('clear-cart-btn');
+    if (clearCartBtn) {
+        clearCartBtn.addEventListener('click', clearCart);
+    }
+
+    // WhatsApp CTA button
+    const whatsappCta = document.getElementById('whatsapp-cta');
+    if (whatsappCta) {
+        whatsappCta.addEventListener('click', openWhatsApp);
+    }
+
+    // Send message button
+    const sendMessageBtn = document.getElementById('send-message-btn');
+    if (sendMessageBtn) {
+        sendMessageBtn.addEventListener('click', sendCustomMessage);
+    }
+
+    // Directions button
+    const directionsBtn = document.getElementById('directions-btn');
+    if (directionsBtn) {
+        directionsBtn.addEventListener('click', getDirections);
+    }
+
+    // WhatsApp float button
+    const whatsappFloat = document.getElementById('whatsapp-float');
+    if (whatsappFloat) {
+        whatsappFloat.addEventListener('click', openWhatsApp);
     }
 
     // Modal close buttons
@@ -496,7 +547,6 @@ async function fetchReviewsByProduct(productId) {
     try {
         const response = await fetch(`${API_URL}/api/reviews/product/${productId}`);
 
-        
         if (!response.ok) {
             throw new Error('Failed to fetch reviews');
         }
@@ -619,6 +669,14 @@ async function handleReviewSubmit(e) {
             body: JSON.stringify(reviewData)
         });
 
+        // Check if response is JSON before parsing
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const textResponse = await response.text();
+            console.error('Non-JSON response received:', textResponse);
+            throw new Error('Server returned an invalid response. Please try again later or contact support.');
+        }
+
         const responseData = await response.json();
         console.log('Server response:', responseData);
 
@@ -685,7 +743,7 @@ function getDirections() {
 
 async function fetchAllReviews() {
     try {
-        const response = await fetch(`${API_URL}`);
+        const response = await fetch(`${API_URL}/api/reviews`);
         
         if (!response.ok) {
             throw new Error('Failed to fetch reviews');

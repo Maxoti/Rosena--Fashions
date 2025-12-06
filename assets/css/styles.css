@@ -18,8 +18,10 @@ body {
 }
 
 /* ===== Navigation ===== */
+
+    /* ===== Navigation ===== */
 nav {
-    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    background: linear-gradient(135deg, #FF9900 0%, #FF8800 100%);
     padding: 12px 0;
     position: sticky;
     top: 0;
