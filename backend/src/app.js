@@ -14,7 +14,7 @@ app.use(cors({
   origin: [
     'http://localhost:5500',
     'http://127.0.0.1:5500',
-    'https://rosena-fashions-1.onrender.com' // Add your Render URL
+    'https://rosena-fashions-1.onrender.com'
   ],
    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,

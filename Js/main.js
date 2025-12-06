@@ -1,5 +1,5 @@
 // ========== API CONFIGURATION ==========
-const API_URL = 'http://localhost:5000/api/reviews';
+const API_URL = 'https://rosena-fashions-1.onrender.com';
 const WHATSAPP_NUMBER = '254737867028';
 
 // ========== PRODUCT DATA ==========
@@ -284,7 +284,7 @@ async function loadProducts() {
     container.innerHTML = '<div class="loading">Loading products...</div>';
 
     try {
-        const response = await fetch(`${API_URL}/products`);
+        const response = await fetch(`${API_URL}/api/products`);
         
         let productsWithRatings = [];
         
@@ -414,8 +414,7 @@ async function showProductDetails(productId) {
     
     try {
         // Fetch product reviews
-        const response = await fetch(`${API_URL}/product/${productId}`);
-        
+        const response = await fetch(`${API_URL}/api/reviews/product/${productId}`);
         let reviews = [];
         let avgRating = 0;
         
@@ -495,8 +494,8 @@ async function showProductDetails(productId) {
 
 async function fetchReviewsByProduct(productId) {
     try {
+        const response = await fetch(`${API_URL}/api/reviews/product/${productId}`);
 
-        const response = await fetch(`http://localhost:5000/api/reviews/product/${productId}`);
         
         if (!response.ok) {
             throw new Error('Failed to fetch reviews');
