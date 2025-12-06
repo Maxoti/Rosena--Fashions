@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 const path = require('path');
 
 // Load .env from the root directory
-require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
+require('dotenv').config({ path: path.join(__dirname, '..', '..', '..', '.env') });
 
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
@@ -13,6 +13,9 @@ const pool = new Pool({
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+  ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost' 
+    ? { rejectUnauthorized: false } 
+    : false,
 });
 
 pool.on('connect', () => {
