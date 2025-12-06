@@ -13,16 +13,20 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:5500',
-    'http://127.0.0.1:5500'
+    'http://127.0.0.1:5500',
+    'https://rosena-fashions-1.onrender.com' // Add your Render URL
   ],
 }));
 
 app.use(bodyParser.json());
 
+// Serve static files (CSS, JS, images)
+app.use(express.static(path.join(__dirname, '..', '..')));
+
 // Serve frontend index.html correctly
 app.get('/', (req, res) => {
   res.sendFile(
-    path.join(__dirname, '..', 'index.html') // Move up one folder, then index.html
+    path.join(__dirname, '..', '..', 'index.html') // Go up TWO folders to reach root
   );
 });
 
@@ -34,4 +38,3 @@ app.use('/api/products', productRoutes);
 app.use(errorHandler);
 
 module.exports = app;
-
