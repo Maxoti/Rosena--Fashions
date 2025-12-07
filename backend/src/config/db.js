@@ -4,26 +4,18 @@ const path = require('path');
 // Load .env from the root directory
 require('dotenv').config({ path: path.join(__dirname, '..', '..', '..', '.env') });
 
+require('dotenv').config();
+
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'rosena_reviews',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || '',
+  connectionString: process.env.DATABASE_URL || 'postgres://postgres:password@localhost:5432/rosena_reviews',
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
-  ssl: process.env.DB_HOST && process.env.DB_HOST !== 'localhost' 
-    ? { rejectUnauthorized: false } 
-    : false,
 });
 
-pool.on('connect', () => {
-  console.log('Connected to PostgreSQL');
-});
-
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
-});
+pool.on('connect', () => console.log('Connected to PostgreSQL'));
+pool.on('error', (err) => console.error('Unexpected error on idle client', err));
 
 module.exports = pool;
+
