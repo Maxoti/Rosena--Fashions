@@ -658,8 +658,6 @@ async function handleReviewSubmit(e) {
         comment: reviewText
     };
 
-    console.log('Submitting review:', reviewData);
-
     try {
         const response = await fetch(`${API_URL}/api/reviews`, {
             method: 'POST',
@@ -678,7 +676,6 @@ async function handleReviewSubmit(e) {
         }
 
         const responseData = await response.json();
-        console.log('Server response:', responseData);
 
         if (!response.ok) {
             throw new Error(responseData.message || 'Failed to submit review');
@@ -686,16 +683,17 @@ async function handleReviewSubmit(e) {
 
         showNotification('Review submitted successfully! Thank you for your feedback.', 'success');
         
-        closeReviewModal();
+        // Refresh the reviews before closing modal
+        await fetchReviewsByProduct(productId);
         
         // Reload products to show updated ratings
         await loadProducts();
         
-        // Refresh product details and reviews if modal is open
-        const productModal = document.getElementById('product-modal');
-        if (productModal && productModal.classList.contains('active')) {
-            await fetchReviewsByProduct(productId);
-        }
+        // Close the review modal
+        closeReviewModal();
+        
+        // Re-open the product modal to show updated reviews
+        await showProductDetails(productId);
 
     } catch (error) {
         console.error('Error submitting review:', error);

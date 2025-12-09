@@ -77,7 +77,7 @@ nav ul li a:hover {
 
 /* ===== Home Section ===== */
 #home {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #5DADE2 0%, #F39C12 100%);
     color: white;
     text-align: center;
     padding: 50px 20px;
@@ -630,6 +630,19 @@ nav ul li a:hover {
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-shadow: 0 2px 6px rgba(255, 153, 0, 0.3);
+}
+
+#submit-review:hover {
+    background: linear-gradient(135deg, #FF8800 0%, #FF7700 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.4);
+}
+
+#submit-review:active {
+    transform: translateY(0);
 }
 
 /* ===== About Section ===== */
