@@ -41,6 +41,52 @@ function initializeApp() {
 }
 
 function setupEventListeners() {
+    // ===== HAMBURGER MENU TOGGLE =====
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    if (hamburger && navMenu) {
+        // Toggle menu on hamburger click
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking nav links
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+    }
+
+    // Cart button - PRIMARY FIX FOR MOBILE
+    const cartButton = document.getElementById('cart-button');
+    if (cartButton) {
+        cartButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleCart();
+            // Close mobile menu when opening cart
+            if (hamburger && navMenu) {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }
+        });
+    }
+
+    // ... rest of your existing event listeners ...
+
+function setupEventListeners() {
     // Cart button - PRIMARY FIX FOR MOBILE
     const cartButton = document.getElementById('cart-button');
     if (cartButton) {
@@ -768,4 +814,5 @@ async function fetchAllReviews() {
     } catch (error) {
         console.error('Failed to fetch reviews:', error);
     }
+}
 }
