@@ -40,6 +40,7 @@ function initializeApp() {
     updateCartDisplay();
 }
 
+// ========== EVENT LISTENERS (FIXED - NO DUPLICATES) ==========
 function setupEventListeners() {
     // ===== HAMBURGER MENU TOGGLE =====
     const hamburger = document.getElementById('hamburger');
@@ -70,7 +71,7 @@ function setupEventListeners() {
         });
     }
 
-    // Cart button - PRIMARY FIX FOR MOBILE
+    // Cart button
     const cartButton = document.getElementById('cart-button');
     if (cartButton) {
         cartButton.addEventListener('click', (e) => {
@@ -81,18 +82,6 @@ function setupEventListeners() {
                 hamburger.classList.remove('active');
                 navMenu.classList.remove('active');
             }
-        });
-    }
-
-    // ... rest of your existing event listeners ...
-
-function setupEventListeners() {
-    // Cart button - PRIMARY FIX FOR MOBILE
-    const cartButton = document.getElementById('cart-button');
-    if (cartButton) {
-        cartButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleCart();
         });
     }
 
@@ -372,46 +361,107 @@ function checkoutViaWhatsApp() {
     window.open(url, '_blank');
 }
 
-// ========== PRODUCT LOADING ==========
+// ========== LOCAL STORAGE FOR REVIEWS ==========
+
+function saveReviewLocally(productId, reviewData) {
+    try {
+        const allReviews = JSON.parse(localStorage.getItem('rosenaReviews') || '[]');
+        
+        const newReview = {
+            id: Date.now(),
+            product_id: productId,
+            name: reviewData.name,
+            rating: reviewData.rating,
+            comment: reviewData.comment,
+            created_at: new Date().toISOString()
+        };
+        
+        allReviews.push(newReview);
+        localStorage.setItem('rosenaReviews', JSON.stringify(allReviews));
+        
+        return newReview;
+    } catch (error) {
+        console.error('Error saving review locally:', error);
+        return null;
+    }
+}
+
+function getLocalReviews(productId) {
+    try {
+        const allReviews = JSON.parse(localStorage.getItem('rosenaReviews') || '[]');
+        return allReviews.filter(review => review.product_id === parseInt(productId));
+    } catch (error) {
+        console.error('Error getting local reviews:', error);
+        return [];
+    }
+}
+
+// ========== FAST PRODUCT LOADING ==========
 
 async function loadProducts() {
     const container = document.getElementById('products-container');
     if (!container) return;
     
-    container.innerHTML = '<div class="loading">Loading products...</div>';
-
-    try {
-        const response = await fetch(`${API_URL}/api/products`);
+    // IMMEDIATELY show products from local data
+    container.innerHTML = '';
+    productsData.forEach(product => {
+        const localReviews = getLocalReviews(product.id);
+        let avgRating = 0;
+        if (localReviews.length > 0) {
+            avgRating = localReviews.reduce((sum, r) => sum + r.rating, 0) / localReviews.length;
+        }
         
-        let productsWithRatings = [];
+        const productData = { 
+            ...product, 
+            avg_rating: avgRating, 
+            review_count: localReviews.length 
+        };
+        const productCard = createProductCard(productData);
+        container.appendChild(productCard);
+    });
+
+    // Try to fetch from backend in background (with timeout)
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        const response = await fetch(`${API_URL}/api/products`, {
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
         
         if (response.ok) {
-            productsWithRatings = await response.json();
-        }
-
-        container.innerHTML = '';
-        
-        productsData.forEach(localProduct => {
-            const dbProduct = productsWithRatings.find(p => p.id === localProduct.id);
-            const productData = {
-                ...localProduct,
-                avg_rating: dbProduct ? parseFloat(dbProduct.avg_rating || 0) : 0,
-                review_count: dbProduct ? parseInt(dbProduct.review_count || 0) : 0
-            };
+            const productsWithRatings = await response.json();
             
-            const productCard = createProductCard(productData);
-            container.appendChild(productCard);
-        });
+            // Update with backend data
+            container.innerHTML = '';
+            productsData.forEach(localProduct => {
+                const dbProduct = productsWithRatings.find(p => p.id === localProduct.id);
+                const localReviews = getLocalReviews(localProduct.id);
+                
+                let avgRating = 0;
+                let reviewCount = localReviews.length;
+                
+                if (dbProduct) {
+                    avgRating = parseFloat(dbProduct.avg_rating || 0);
+                    reviewCount = parseInt(dbProduct.review_count || 0) + localReviews.length;
+                } else if (localReviews.length > 0) {
+                    avgRating = localReviews.reduce((sum, r) => sum + r.rating, 0) / localReviews.length;
+                }
+                
+                const productData = {
+                    ...localProduct,
+                    avg_rating: avgRating,
+                    review_count: reviewCount
+                };
+                
+                const productCard = createProductCard(productData);
+                container.appendChild(productCard);
+            });
+        }
     } catch (error) {
-        console.error('Error loading products:', error);
-        
-        // Fallback to local data
-        container.innerHTML = '';
-        productsData.forEach(product => {
-            const productData = { ...product, avg_rating: 0, review_count: 0 };
-            const productCard = createProductCard(productData);
-            container.appendChild(productCard);
-        });
+        console.log('Backend unavailable, showing products with local reviews only');
     }
 }
 
@@ -509,112 +559,83 @@ async function showProductDetails(productId) {
         return;
     }
     
+    // Get local reviews
+    const localReviews = getLocalReviews(productId);
+    let reviews = [...localReviews];
+    let avgRating = 0;
+    
+    // Try to fetch backend reviews
     try {
-        // Fetch product reviews
         const response = await fetch(`${API_URL}/api/reviews/product/${productId}`);
-        let reviews = [];
-        let avgRating = 0;
-        
         if (response.ok) {
-            reviews = await response.json();
-            
-            // Calculate average rating from reviews
-            if (reviews.length > 0) {
-                const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-                avgRating = totalRating / reviews.length;
-            }
+            const backendReviews = await response.json();
+            reviews = [...backendReviews, ...localReviews];
         }
+    } catch (error) {
+        console.log('Using local reviews only');
+    }
+    
+    // Calculate average rating
+    if (reviews.length > 0) {
+        const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+        avgRating = totalRating / reviews.length;
+    }
 
-        modalBody.innerHTML = `
-            <div class="product-details-container">
-                <div>
-                    <img src="${product.image}" alt="${product.name}" class="product-details-image">
+    modalBody.innerHTML = `
+        <div class="product-details-container">
+            <div>
+                <img src="${product.image}" alt="${product.name}" class="product-details-image">
+            </div>
+            <div class="product-details-info">
+                <h2>${product.name}</h2>
+                <p class="product-details-price">Ksh ${product.price.toLocaleString()}</p>
+                
+                <div class="product-rating">
+                    <span class="rating-stars">${generateStars(avgRating)}</span>
+                    <span class="rating-info">(${avgRating.toFixed(1)}) ${reviews.length} reviews</span>
                 </div>
-                <div class="product-details-info">
-                    <h2>${product.name}</h2>
-                    <p class="product-details-price">Ksh ${product.price.toLocaleString()}</p>
-                    
-                    <div class="product-rating">
-                        <span class="rating-stars">${generateStars(avgRating)}</span>
-                        <span class="rating-info">(${avgRating.toFixed(1)}) ${reviews.length} reviews</span>
-                    </div>
 
-                    <p class="product-description">${product.description}</p>
+                <p class="product-description">${product.description}</p>
 
-                    <div class="quantity-selector">
-                        <label>Quantity:</label>
-                        <input type="number" class="quantity-input" value="1" min="1" max="99" id="modal-qty-${product.id}">
-                    </div>
+                <div class="quantity-selector">
+                    <label>Quantity:</label>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99" id="modal-qty-${product.id}">
+                </div>
 
-                    <div class="product-buttons">
-                        <button class="btn-add-cart" id="modal-add-cart">
-                            🛒 Add to Cart
-                        </button>
-                        <button class="btn-write-review" id="modal-review-btn">
-                            ⭐ Write Review
-                        </button>
-                    </div>
+                <div class="product-buttons">
+                    <button class="btn-add-cart" id="modal-add-cart">
+                        🛒 Add to Cart
+                    </button>
+                    <button class="btn-write-review" id="modal-review-btn">
+                        ⭐ Write Review
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <div class="reviews-section">
-                <h3>Customer Reviews (${reviews.length})</h3>
-                <div id="product-reviews-container">
-                    ${reviews.length > 0 
-                        ? reviews.map(review => createReviewHTML(review)).join('') 
-                        : '<p class="no-reviews">No reviews yet. Be the first to review this product!</p>'
-                    }
-                </div>
+        <div class="reviews-section">
+            <h3>Customer Reviews (${reviews.length})</h3>
+            <div id="product-reviews-container">
+                ${reviews.length > 0 
+                    ? reviews.map(review => createReviewHTML(review)).join('') 
+                    : '<p class="no-reviews">No reviews yet. Be the first to review this product!</p>'
+                }
             </div>
-        `;
+        </div>
+    `;
 
-        // Add event listeners to modal buttons
-        const modalAddCartBtn = document.getElementById('modal-add-cart');
-        modalAddCartBtn.addEventListener('click', () => {
-            const qtyInput = document.getElementById(`modal-qty-${product.id}`);
-            const quantity = parseInt(qtyInput.value) || 1;
-            addToCart(product.id, quantity);
-        });
+    // Add event listeners
+    const modalAddCartBtn = document.getElementById('modal-add-cart');
+    modalAddCartBtn.addEventListener('click', () => {
+        const qtyInput = document.getElementById(`modal-qty-${product.id}`);
+        const quantity = parseInt(qtyInput.value) || 1;
+        addToCart(product.id, quantity);
+    });
 
-        const modalReviewBtn = document.getElementById('modal-review-btn');
-        modalReviewBtn.addEventListener('click', () => {
-            openReviewModal(productId);
-        });
-
-    } catch (error) {
-        console.error('Error loading product details:', error);
-        modalBody.innerHTML = '<p class="error-message">Error loading product details. Please try again.</p>';
-    }
-}
-
-// ========== FETCH REVIEWS BY PRODUCT ==========
-
-async function fetchReviewsByProduct(productId) {
-    try {
-        const response = await fetch(`${API_URL}/api/reviews/product/${productId}`);
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch reviews');
-        }
-        
-        const reviews = await response.json();
-
-        const container = document.getElementById('product-reviews-container');
-        if (container) {
-            container.innerHTML = reviews.length
-                ? reviews.map(review => createReviewHTML(review)).join('')
-                : '<p class="no-reviews">No reviews yet. Be the first to review this product!</p>';
-        }
-
-        return reviews;
-    } catch (error) {
-        console.error('Failed to fetch reviews for product:', error);
-        const container = document.getElementById('product-reviews-container');
-        if (container) {
-            container.innerHTML = '<p class="error-message">Failed to load reviews.</p>';
-        }
-        return [];
-    }
+    const modalReviewBtn = document.getElementById('modal-review-btn');
+    modalReviewBtn.addEventListener('click', () => {
+        openReviewModal(productId);
+    });
 }
 
 // ========== CREATE REVIEW HTML ==========
@@ -696,7 +717,6 @@ async function handleReviewSubmit(e) {
 
     const rating = parseInt(ratingInput.value);
 
-    // Prepare data matching backend expectations
     const reviewData = {
         product_id: productId,
         name: customerName,
@@ -704,6 +724,11 @@ async function handleReviewSubmit(e) {
         comment: reviewText
     };
 
+    // Save locally first (always works)
+    saveReviewLocally(productId, reviewData);
+    showNotification('Review saved successfully! Thank you for your feedback.', 'success');
+
+    // Try to save to backend in background
     try {
         const response = await fetch(`${API_URL}/api/reviews`, {
             method: 'POST',
@@ -713,38 +738,17 @@ async function handleReviewSubmit(e) {
             body: JSON.stringify(reviewData)
         });
 
-        // Check if response is JSON before parsing
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-            const textResponse = await response.text();
-            console.error('Non-JSON response received:', textResponse);
-            throw new Error('Server returned an invalid response. Please try again later or contact support.');
+        if (response.ok) {
+            console.log('Review also saved to backend');
         }
-
-        const responseData = await response.json();
-
-        if (!response.ok) {
-            throw new Error(responseData.message || 'Failed to submit review');
-        }
-
-        showNotification('Review submitted successfully! Thank you for your feedback.', 'success');
-        
-        // Refresh the reviews before closing modal
-        await fetchReviewsByProduct(productId);
-        
-        // Reload products to show updated ratings
-        await loadProducts();
-        
-        // Close the review modal
-        closeReviewModal();
-        
-        // Re-open the product modal to show updated reviews
-        await showProductDetails(productId);
-
     } catch (error) {
-        console.error('Error submitting review:', error);
-        showNotification(`Error submitting review: ${error.message}`, 'error');
+        console.log('Review saved locally only (backend unavailable)');
     }
+
+    // Reload products and close modal
+    await loadProducts();
+    closeReviewModal();
+    await showProductDetails(productId);
 }
 
 function resetReviewForm() {
@@ -814,5 +818,4 @@ async function fetchAllReviews() {
     } catch (error) {
         console.error('Failed to fetch reviews:', error);
     }
-}
 }
