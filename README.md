@@ -2,7 +2,7 @@
 E-Commerce & Sales Management System
 
 ## Overview
-RosenaFashions is a full-stack e-commerce and sales management system developed to support retail operations by handling product sales, receipt generation, user access control, and business reporting. The system is designed to improve day-to-day sales tracking and provide insights for business decision-making.
+RosenaFashions is a full-stack e-commerce and sales management system developed to support retail operations by handling product sales, user access control, and business reporting. The system is designed to improve day-to-day sales tracking and provide insights for business decision-making online
 
 ## Features Implemented
 -Add to cart feature.
