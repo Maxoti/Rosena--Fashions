@@ -344,8 +344,8 @@ function checkoutViaWhatsApp() {
         return;
     }
 
-    let message = '🛍️ *New Order from Rosena Fashion Store*\n\n';
-    message += '📦 *Order Details:*\n';
+    let message = ' *New Order from Rosena Fashion Store*\n\n';
+    message += '*Order Details:*\n';
     
     cart.forEach((item, index) => {
         message += `\n${index + 1}. ${item.name}\n`;
@@ -354,7 +354,7 @@ function checkoutViaWhatsApp() {
         message += `   Subtotal: Ksh ${(item.price * item.quantity).toLocaleString()}\n`;
     });
     
-    message += `\n💰 *Total Amount: Ksh ${getCartTotal().toLocaleString()}*\n\n`;
+    message += `\n *Total Amount: Ksh ${getCartTotal().toLocaleString()}*\n\n`;
     message += 'Please confirm my order and let me know the delivery details. Thank you!';
 
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -496,7 +496,7 @@ function createProductCard(product) {
             </button>
         </div>
         <button class="whatsapp-btn btn-view-details" data-product-id="${product.id}">
-            View Details & Reviews
+            View Reviews
         </button>
     `;
 
