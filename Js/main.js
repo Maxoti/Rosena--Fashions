@@ -1,5 +1,5 @@
 // ========== API CONFIGURATION ==========
-const API_URL = 'https://rosena-fashions-1.onrender.com';
+const API_URL = 'https://rosena-fashions-production.up.railway.app';
 const WHATSAPP_NUMBER = '254737867028';
 
 // ========== PRODUCT DATA ==========
