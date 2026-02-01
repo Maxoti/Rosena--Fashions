@@ -495,7 +495,7 @@ function createProductCard(product) {
                 ⭐ Review
             </button>
         </div>
-        <button class="whatsapp-btn btn-view-details" data-product-id="${product.id}">
+        <button class="whatsapp-btn btn-view-reviews" data-product-id="${product.id}">
             View Reviews
         </button>
     `;
